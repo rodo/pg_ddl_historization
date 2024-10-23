@@ -1,0 +1,2 @@
+*~
+extension_tests.sql integration_tests.sql test_event_trigger.sql test_function.sql test_table.sql

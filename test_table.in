@@ -1,0 +1,19 @@
+--
+--
+--
+BEGIN;
+
+SELECT plan(3);
+
+SELECT has_schema('_SCHEMA_'::name);
+
+SELECT has_table('_SCHEMA_'::name, 'ddl_history'::name);
+
+SELECT columns_are(
+       '_SCHEMA_'::name,
+       'ddl_history'::name,
+       ARRAY['id', 'objoid', 'ddl_date', 'username', 'ddl_tag', 'object_name', 'otype', 'ddl_command', 'trg_name', 'txid']);
+
+SELECT finish()
+
+ROLLBACK;

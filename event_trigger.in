@@ -1,0 +1,5 @@
+--
+--
+--
+CREATE EVENT TRIGGER log_ddl_info      ON ddl_command_end EXECUTE PROCEDURE _SCHEMA_.log_ddl();
+CREATE EVENT TRIGGER log_ddl_drop_info ON sql_drop        EXECUTE PROCEDURE _SCHEMA_.log_ddl_drop();
