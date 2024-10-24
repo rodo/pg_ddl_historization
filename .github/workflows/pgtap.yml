@@ -34,6 +34,13 @@ jobs:
         env:
           PGPASSWORD: postgres
 
+      - name: create extension pgtap
+        run: >-
+          psql --host localhost --username postgres --dbname postgres \
+               -c 'CREATE EXTENSION pgtap'
+        env:
+          PGPASSWORD: postgres
+
       - name: run tests
         run: pg_prove --host localhost --dbname postgres --username postgres test_*.sql
         env:
