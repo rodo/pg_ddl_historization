@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pg-version: [ '16' ]
+        version: [ '16' ]
 
     container: pgxn/pgxn-tools
     env:
