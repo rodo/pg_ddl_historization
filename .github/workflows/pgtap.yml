@@ -1,0 +1,76 @@
+# .github/workflows/pgtest.yml
+name: Postgres tests
+
+on: push
+
+jobs:
+  pgtap:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pg-version: [ '16' ]
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.pg-version }}
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install pg_prove
+        run: sudo cpan TAP::Parser::SourceHandler::pgTAP
+        env:
+          SHELL: /bin/bash
+
+      - name: install postgresql-common
+        run: sudo apt install -y postgresql-common curl ca-certificates
+
+      - name: install pgdg repo
+        run: sudo install -d /usr/share/postgresql-common/pgdg
+
+      - name: fetch pgdg signature keys
+        run: sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+      - name: setup repo
+        run: sudo sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+      - name: install postgres-server-dev-${{ matrix.pg-version }}
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-server-dev-${{ matrix.pg-version }}
+
+      - name: Checkout pgtap
+        uses: actions/checkout@v4
+        with:
+          repository: theory/pgtap
+          path: pgtap
+          ref: v1.3.2
+
+      - name: install pgtap
+        working-directory: pgtap
+        run: make && psql --host localhost --username postgres --dbname postgres --file sql/pgtap.sql
+        env:
+          PGPASSWORD: postgres
+
+      - name: install extension
+        run: make install
+
+      - name: load sql
+        run: >-
+          psql --host localhost --username postgres --dbname postgres \
+               -c 'CREATE EXTENSION ddl_historization'
+        env:
+          PGPASSWORD: postgres
+
+      - name: run tests
+        run: pg_prove --host localhost --dbname postgres --username postgres *_test.sql
+        env:
+          PGPASSWORD: postgres
