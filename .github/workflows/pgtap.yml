@@ -15,8 +15,11 @@ jobs:
       PGUSER: postgres
 
     steps:
-      - name: checkout repo
-        uses: actions/checkout@main
+      - run: pg-start ${{ matrix.version }}
+      - uses: actions/checkout@main
+
+      # Basic regression test.
+      - run: pg-build-test
 
       - name: build application
         run: make build
