@@ -4,16 +4,7 @@ name: Postgres tests
 on: push
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@main
-      - name: build application
-        run: make build
-
   pgtap:
-    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,6 +15,11 @@ jobs:
       PGUSER: postgres
 
     steps:
+      - name: checkout repo
+        uses: actions/checkout@main
+
+      - name: build application
+        run: make build
 
       - name: install extension
         run: make install
