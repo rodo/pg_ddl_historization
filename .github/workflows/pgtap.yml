@@ -74,6 +74,15 @@ jobs:
       - name: load sql
         run: >-
           psql --host localhost --username postgres --dbname postgres \
+               -c 'select name,default_version,installed_version from pg_available_extensions order by name'
+        env:
+          PGPASSWORD: postgres
+
+
+
+      - name: load sql
+        run: >-
+          psql --host localhost --username postgres --dbname postgres \
                -c 'CREATE EXTENSION ddl_historization'
         env:
           PGPASSWORD: postgres
