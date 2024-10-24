@@ -1,0 +1,3 @@
+comment = 'Historize ddl changes'
+default_version = '0.2'
+relocatable = false

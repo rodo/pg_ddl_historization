@@ -1,9 +1,6 @@
 --
 --
 --
-BEGIN;
-
-SET search_path='_SCHEMA_';
 
 CREATE TABLE IF NOT EXISTS ddl_history (
   id serial primary key,
@@ -18,7 +15,7 @@ CREATE TABLE IF NOT EXISTS ddl_history (
   txid        bigint
 );
 
-CREATE OR REPLACE VIEW dba.ddl_history_comment AS
+CREATE OR REPLACE VIEW ddl_history_comment AS
 SELECT
   h.id,
   h.objoid,
@@ -33,4 +30,5 @@ SELECT
   WHERE ddl_tag = 'COMMENT'
 ;
 
-COMMIT;
+GRANT INSERT,SELECT ON ddl_history TO PUBLIC;
+GRANT USAGE ON ddl_history_id_seq TO PUBLIC;

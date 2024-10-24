@@ -1,10 +1,8 @@
 -- Log ddl changes on non DROP actions
 --
--- -*- mode: sql;-*-
+--
 
-SET search_path='_SCHEMA_'
-
-CREATE OR REPLACE FUNCTION dba.log_ddl()
+CREATE OR REPLACE FUNCTION log_ddl()
 
   RETURNS event_trigger AS $$
 
@@ -16,7 +14,7 @@ BEGIN
 
   FOR r IN SELECT * FROM pg_event_trigger_ddl_commands()
   LOOP
-     INSERT INTO dba.ddl_history
+     INSERT INTO @extschema@.ddl_history
      (ddl_date, objoid, ddl_tag, object_name, ddl_command, otype, username, trg_name)
      VALUES
      (statement_timestamp(), r.objid, tg_tag, r.object_identity, s, r.object_type, current_user, 'command_end');
@@ -30,7 +28,7 @@ $$ LANGUAGE plpgsql;
 -- Log ddl changes on DROP actions
 --
 --
-CREATE OR REPLACE FUNCTION dba.log_ddl_drop()
+CREATE OR REPLACE FUNCTION log_ddl_drop()
 
   RETURNS event_trigger AS $$
 
@@ -41,8 +39,8 @@ BEGIN
   s := current_query();
   FOR r IN SELECT * FROM pg_event_trigger_dropped_objects()
     LOOP
-      INSERT INTO dba.ddl_history (ddl_date, ddl_tag, object_name, ddl_command, otype, username, trg_name )
-      VALUES (statement_timestamp(), tg_tag, r.object_identity, s, r.object_type, current_user, 'sql_drop');
+      INSERT INTO @extschema@.ddl_history (ddl_date, objoid, ddl_tag, object_name, ddl_command, otype, username, trg_name )
+      VALUES (statement_timestamp(), r.objid, tg_tag, r.object_identity, s, r.object_type, current_user, 'sql_drop');
 
     END LOOP;
 END;

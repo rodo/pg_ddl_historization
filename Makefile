@@ -1,22 +1,42 @@
-.PHONY : all flush test clean
+.PHONY : all build flush clean install test
 
-FILES = function.sql event_trigger.sql table.sql test_function.sql test_event_trigger.sql test_table.sql
+FILES = function.sql event_trigger.sql table.sql
 
-all : $(FILES)
+TESTFILES = test_function.sql test_event_trigger.sql test_table.sql
 
-clean :
-	rm -f $(FILES)
+EXTENSION = ddl_historization
+DATA = ddl_historization--0.2.sql
 
-%.sql :	%.in
-	sed -e 's/_SCHEMA_/dba/' $< > $@
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
 
-test :
-	pg_prove test_*.sql
+# edit this value if you want to deploy by hand
+SCHEMA = @extschema@
 
-flush :
+include $(PGXS)
+
+all: $(FILES) $(TESTFILES)
+
+clean:
+	rm -f $(FILES) $(TESTFILES) $(DATA)
+
+%.sql:	%.in
+	sed -e 's/_SCHEMA_/$(SCHEMA)/' $< > $@
+
+test:
+	pg_prove $(TESTFILES)
+
+flush:
 	psql -f clean/drop_event_trigger.sql
 	psql -f clean/drop_function.sql
 	psql -f clean/drop_table.sql
 	psql -f table.sql
 	psql -f function.sql
 	psql -f event_trigger.sql
+
+build: $(FILES)
+	cat table.sql > $(DATA)
+	cat function.sql >> $(DATA)
+	cat event_trigger.sql >> $(DATA)
+
+install: build

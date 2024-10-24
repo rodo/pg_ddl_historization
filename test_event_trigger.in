@@ -1,4 +1,5 @@
 --
+-- Test if the event trigger exists
 -- There is no function for now in pgtap to test event triggers
 --
 BEGIN;

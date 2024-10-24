@@ -1,5 +1,5 @@
 --
---
+-- Test if the table exists and has the right format
 --
 BEGIN;
 

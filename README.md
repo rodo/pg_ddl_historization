@@ -1,3 +1,5 @@
+PostgreSQL Extension to historize in a table all DDL changes made on a database
+
 # pg_ddl_log_historization
 Historize the ddl changes inside PostgreSQL database
 
@@ -5,7 +7,7 @@ Historize the ddl changes inside PostgreSQL database
 
 To install the extension, start by defining your connections parameters in your shell as usual.
 
-If your connection string is well set up, the install is easy as 
+If your connection string is well set up, the install is easy as
 
 ```
 $ make install
