@@ -13,3 +13,5 @@ jobs:
         uses: actions/checkout@main
       - name: build application
         run: make build
+      - name: build application for pg_tle
+        run: make pgtle
