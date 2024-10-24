@@ -27,14 +27,7 @@ jobs:
       - name: install extension
         run: make install
 
-      - name: load sql
-        run: >-
-          psql --host localhost --username postgres --dbname postgres \
-               -c 'select name,default_version,installed_version from pg_available_extensions order by name'
-        env:
-          PGPASSWORD: postgres
-
-      - name: load sql
+      - name: create extension
         run: >-
           psql --host localhost --username postgres --dbname postgres \
                -c 'CREATE EXTENSION ddl_historization'
@@ -42,6 +35,6 @@ jobs:
           PGPASSWORD: postgres
 
       - name: run tests
-        run: pg_prove --host localhost --dbname postgres --username postgres *_test.sql
+        run: pg_prove --host localhost --dbname postgres --username postgres test_*.sql
         env:
           PGPASSWORD: postgres
