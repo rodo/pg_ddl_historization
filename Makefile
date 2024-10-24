@@ -5,7 +5,12 @@ FILES = function.sql event_trigger.sql table.sql
 TESTFILES = test_function.sql test_event_trigger.sql test_table.sql
 
 EXTENSION = ddl_historization
-DATA = ddl_historization--0.2.sql
+
+EXTVERSION = 0.3
+
+DATA = ddl_historization--$(EXTVERSION).sql
+
+PGTLEOUT = pgtle.$(EXTENSION)-$(EXTVERSION).sql
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
@@ -19,6 +24,7 @@ all: $(FILES) $(TESTFILES)
 
 clean:
 	rm -f $(FILES) $(TESTFILES) $(DATA)
+	rm -f $(PGTLEOUT)
 
 %.sql:	%.in
 	sed -e 's/_SCHEMA_/$(SCHEMA)/' $< > $@
@@ -33,6 +39,12 @@ flush:
 	psql -f table.sql
 	psql -f function.sql
 	psql -f event_trigger.sql
+
+pgtle: build
+	sed -e 's/_EXTVERSION_/$(EXTVERSION)/' pgtle_header.in > $(PGTLEOUT)
+	cat $(DATA) >>  $(PGTLEOUT)
+	cat pgtle_footer.in >> $(PGTLEOUT)
+
 
 build: $(FILES)
 	cat table.sql > $(DATA)

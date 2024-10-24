@@ -1,0 +1,6 @@
+SELECT pgtle.install_extension
+(
+ 'ddl_historization',
+ '_EXTVERSION_',
+ 'DDL changes historization',
+$_pg_tle_$
