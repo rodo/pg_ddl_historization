@@ -5,7 +5,7 @@ on: push
 
 jobs:
   pgtap:
-
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -61,7 +61,7 @@ jobs:
           PGPASSWORD: postgres
 
       - name: install extension
-        run: make install
+        run: sudo make install
 
       - name: load sql
         run: >-
