@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '16' ]
+        version: [ '16', '17' ]
 
     container: pgxn/pgxn-tools
     env:
@@ -34,10 +34,16 @@ jobs:
         env:
           PGPASSWORD: postgres
 
-      - name: create extension pgtap
-        run: >-
-          psql --host localhost --username postgres --dbname postgres \
-               -c 'CREATE EXTENSION pgtap'
+      - name: Checkout pgtap
+        uses: actions/checkout@v4
+        with:
+          repository: theory/pgtap
+          path: pgtap
+          ref: v1.3.3
+
+      - name: install pgtap
+        working-directory: pgtap
+        run: make && psql --host localhost --username postgres --dbname postgres --file sql/pgtap.sql
         env:
           PGPASSWORD: postgres
 
