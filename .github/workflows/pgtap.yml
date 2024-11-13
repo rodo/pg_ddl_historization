@@ -47,7 +47,12 @@ jobs:
         env:
           PGPASSWORD: postgres
 
-      - name: run tests
-        run: pg_prove --host localhost --dbname postgres --username postgres test_*.sql
+      - name: run unit tests
+        run: pg_prove --host localhost --dbname postgres --username postgres test/sql/*.sql
+        env:
+          PGPASSWORD: postgres
+
+      - name: run integration tests
+        run: pg_prove --host localhost --dbname postgres --username postgres test/*.sql
         env:
           PGPASSWORD: postgres

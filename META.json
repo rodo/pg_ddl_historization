@@ -1,0 +1,47 @@
+{
+   "name": "ddl_historization",
+   "abstract": "DDL historization for PostgreSQL",
+   "description": "DDL historization build on event triggers.",
+   "version": "0.0.4",
+   "maintainer": [
+      "Rodolphe Quiédeville <rodolphe@quiedeville.org>"
+   ],
+   "license": {
+      "PostgreSQL": "https://www.postgresql.org/about/licence"
+   },
+   "prereqs": {
+       "runtime": {
+           "requires": {
+               "plpgsql": 0,
+               "PostgreSQL": "12.0.0"
+           }
+      }
+   },
+   "provides": {
+     "ddl_historization": {
+       "abstract": "DDL historization for PostgreSQL",
+       "file": "ddl_historization.sql",
+       "version": "0.0.4"
+     }
+   },
+   "resources": {
+      "bugtracker": {
+         "web": "https://github.com/rodo/pg_ddl_historization/issues"
+      },
+      "repository": {
+        "url":  "https://github.com/rodo/pg_ddl_historization.git",
+        "web":  "https://github.com/rodo/pg_ddl_historization",
+        "type": "git"
+      }
+   },
+   "generated_by": "Rodolphe Quiédeville",
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "https://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+       "historization",
+       "log",
+       "audit"
+   ]
+}

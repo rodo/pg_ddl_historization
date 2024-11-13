@@ -15,9 +15,9 @@ BEGIN
   FOR r IN SELECT * FROM pg_event_trigger_ddl_commands()
   LOOP
      INSERT INTO @extschema@.ddl_history
-     (ddl_date, objoid, ddl_tag, object_name, ddl_command, otype, username, trg_name)
+     (ddl_date, objoid, ddl_tag, object_name, ddl_command, otype, username, trg_name, txid)
      VALUES
-     (statement_timestamp(), r.objid, tg_tag, r.object_identity, s, r.object_type, current_user, 'command_end');
+     (statement_timestamp(), r.objid, tg_tag, r.object_identity, s, r.object_type, current_user, 'command_end', txid_current() );
 
       END LOOP;
 END;
@@ -39,8 +39,8 @@ BEGIN
   s := current_query();
   FOR r IN SELECT * FROM pg_event_trigger_dropped_objects()
     LOOP
-      INSERT INTO @extschema@.ddl_history (ddl_date, objoid, ddl_tag, object_name, ddl_command, otype, username, trg_name )
-      VALUES (statement_timestamp(), r.objid, tg_tag, r.object_identity, s, r.object_type, current_user, 'sql_drop');
+      INSERT INTO @extschema@.ddl_history (ddl_date, objoid, ddl_tag, object_name, ddl_command, otype, username, trg_name, txid )
+      VALUES (statement_timestamp(), r.objid, tg_tag, r.object_identity, s, r.object_type, current_user, 'sql_drop', txid_current() );
 
     END LOOP;
 END;
