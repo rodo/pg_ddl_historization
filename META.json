@@ -20,7 +20,7 @@
    "provides": {
      "ddl_historization": {
        "abstract": "DDL historization for PostgreSQL",
-       "file": "ddl_historization.sql",
+       "file": "dist/ddl_historization.sql",
        "version": "0.0.4"
      }
    },
