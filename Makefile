@@ -38,3 +38,6 @@ pgtle: $(EXTENSION)--$(EXTVERSION).sql
 	sed -e 's/_EXTVERSION_/$(EXTVERSION)/' pgtle_header.in > $(PGTLEOUT)
 	cat $(EXTENSION)--$(EXTVERSION).sql >>  $(PGTLEOUT)
 	cat pgtle_footer.in >> $(PGTLEOUT)
+
+dist:
+	git archive --format zip --prefix=$(EXTENSION)-$(EXTVERSION)/ -o $(EXTENSION)-$(EXTVERSION).zip HEAD
