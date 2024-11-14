@@ -7,7 +7,7 @@ EXTENSION = ddl_historization
 EXTVERSION   = $(shell grep -m 1 '[[:space:]]\{3\}"version":' META.json | \
 	       sed -e 's/[[:space:]]*"version":[[:space:]]*"\([^"]*\)",\{0,1\}/\1/')
 
-DATA = dist/ddl_historization--$(EXTVERSION).sql
+DATA = dist/ddl_historization--$(EXTVERSION).sql dist/ddl_historization--*--$(EXTVERSION).sql
 
 PGTLEOUT = dist/pgtle.$(EXTENSION)-$(EXTVERSION).sql
 

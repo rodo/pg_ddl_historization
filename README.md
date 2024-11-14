@@ -26,6 +26,12 @@ $ make pgtle
 
 And execute the file pgtle.ddl_historization-0.3.sql on your instance
 
+## Install with pgxn
+
+```
+$ pgxn install ddl_historization
+```
+
 ## Test
 
 Tests are done using https://pgtap.org/
