@@ -4,17 +4,20 @@
 
 CREATE TABLE IF NOT EXISTS ddl_history (
   id serial primary key,
-  ddl_date    timestamptz,        -- when the event occured
-  objoid      oid,                -- the oid of the object
-  username    text,               -- the role used by the ddl command
+  ddl_date    timestamptz,      -- when the event occured
+  objoid      oid,              -- the oid of the object
+  username    text,             -- the role used by the ddl command
   ddl_tag     text,
   object_name text,
-  otype       text,                  -- the object type
+  otype       text,             -- the object type
   ddl_command text,             -- the original statement that triggered
   trg_name    text,
-  txid        bigint
+  txid        bigint            -- the transaction id
 );
 
+--
+-- View dedicated to consult the comment on all objects
+--
 CREATE OR REPLACE VIEW ddl_history_comment AS
 SELECT
   h.id,

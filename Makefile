@@ -19,7 +19,7 @@ SCHEMA = @extschema@
 
 include $(PGXS)
 
-all: $(DATA) pgtle
+all: $(DATA) $(PGTLEOUT)
 
 clean:
 	rm -f $(DATA)
@@ -34,10 +34,10 @@ dist/$(EXTENSION)--$(EXTVERSION).sql: $(FILES)
 test:
 	pg_prove -f test/sql/*.sql
 
-pgtle: dist/$(EXTENSION)--$(EXTVERSION).sql
+$(PGTLEOUT): dist/$(EXTENSION)--$(EXTVERSION).sql pgtle_header.in pgtle_footer.in
 	sed -e 's/_EXTVERSION_/$(EXTVERSION)/' pgtle_header.in > $(PGTLEOUT)
-	cat $(EXTENSION)--$(EXTVERSION).sql >>  $(PGTLEOUT)
+	cat dist/$(EXTENSION)--$(EXTVERSION).sql >> $(PGTLEOUT)
 	cat pgtle_footer.in >> $(PGTLEOUT)
 
-dist: pgtle
+dist: $(PGTLEOUT)
 	git archive --format zip --prefix=$(EXTENSION)-$(EXTVERSION)/ -o $(EXTENSION)-$(EXTVERSION).zip HEAD
