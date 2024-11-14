@@ -14,6 +14,6 @@ SELECT columns_are(
        'ddl_history'::name,
        ARRAY['id', 'objoid', 'ddl_date', 'username', 'ddl_tag', 'object_name', 'otype', 'ddl_command', 'trg_name', 'txid']);
 
-SELECT finish()
+SELECT finish();
 
 ROLLBACK;
