@@ -1,16 +1,15 @@
-.PHONY : all build flush clean install test
+.PHONY : all dist pgtle clean install test
 
-FILES = function.sql event_trigger.sql table.sql
-
-TESTFILES = test_function.sql test_event_trigger.sql test_table.sql
+FILES = $(wildcard sql/*.sql)
 
 EXTENSION = ddl_historization
 
-EXTVERSION = 0.3
+EXTVERSION   = $(shell grep -m 1 '[[:space:]]\{3\}"version":' META.json | \
+	       sed -e 's/[[:space:]]*"version":[[:space:]]*"\([^"]*\)",\{0,1\}/\1/')
 
-DATA = ddl_historization--$(EXTVERSION).sql
+DATA = dist/ddl_historization--$(EXTVERSION).sql
 
-PGTLEOUT = pgtle.$(EXTENSION)-$(EXTVERSION).sql
+PGTLEOUT = dist/pgtle.$(EXTENSION)-$(EXTVERSION).sql
 
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
@@ -20,35 +19,25 @@ SCHEMA = @extschema@
 
 include $(PGXS)
 
-all: $(FILES) $(TESTFILES)
+all: $(DATA) $(PGTLEOUT)
 
 clean:
-	rm -f $(FILES) $(TESTFILES) $(DATA)
+	rm -f $(DATA)
 	rm -f $(PGTLEOUT)
 
-%.sql:	%.in
-	sed -e 's/_SCHEMA_/$(SCHEMA)/' $< > $@
+dist/$(EXTENSION)--$(EXTVERSION).sql: $(FILES)
+	cat sql/table.sql > $@
+	cat sql/function.sql >> $@
+	cat sql/event_trigger.sql >> $@
+	cat $@ > dist/ddl_historization.sql
 
 test:
-	pg_prove $(TESTFILES)
+	pg_prove -f test/sql/*.sql
 
-flush:
-	psql -f clean/drop_event_trigger.sql
-	psql -f clean/drop_function.sql
-	psql -f clean/drop_table.sql
-	psql -f table.sql
-	psql -f function.sql
-	psql -f event_trigger.sql
-
-pgtle: build
+$(PGTLEOUT): dist/$(EXTENSION)--$(EXTVERSION).sql pgtle_header.in pgtle_footer.in
 	sed -e 's/_EXTVERSION_/$(EXTVERSION)/' pgtle_header.in > $(PGTLEOUT)
-	cat $(DATA) >>  $(PGTLEOUT)
+	cat dist/$(EXTENSION)--$(EXTVERSION).sql >> $(PGTLEOUT)
 	cat pgtle_footer.in >> $(PGTLEOUT)
 
-
-build: $(FILES)
-	cat table.sql > $(DATA)
-	cat function.sql >> $(DATA)
-	cat event_trigger.sql >> $(DATA)
-
-install: build
+dist: $(PGTLEOUT)
+	git archive --format zip --prefix=$(EXTENSION)-$(EXTVERSION)/ -o $(EXTENSION)-$(EXTVERSION).zip HEAD

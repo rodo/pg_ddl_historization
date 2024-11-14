@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '16', '17' ]
+        version: [ '12', '13', '14', '15', '16', '17' ]
 
     container: pgxn/pgxn-tools
     env:
@@ -22,7 +22,7 @@ jobs:
       - run: pg-build-test
 
       - name: build application
-        run: make build
+        run: make all
 
       - name: install extension
         run: make install
@@ -47,7 +47,12 @@ jobs:
         env:
           PGPASSWORD: postgres
 
-      - name: run tests
-        run: pg_prove --host localhost --dbname postgres --username postgres test_*.sql
+      - name: run unit tests
+        run: pg_prove --host localhost --dbname postgres --username postgres test/sql/*.sql
+        env:
+          PGPASSWORD: postgres
+
+      - name: run integration tests
+        run: pg_prove --host localhost --dbname postgres --username postgres test/*.sql
         env:
           PGPASSWORD: postgres

@@ -1,0 +1,23 @@
+--
+-- Test if the event trigger exists
+-- There is no function for now in pgtap to test event triggers
+--
+BEGIN;
+
+SELECT plan(2);
+
+SELECT results_eq(
+    'SELECT count(*) FROM pg_catalog.pg_event_trigger WHERE evtname=''log_ddl_info''',
+    'SELECT CAST(1 as bigint)'
+);
+
+SELECT results_eq(
+    'SELECT count(*) FROM pg_catalog.pg_event_trigger WHERE evtname=''log_ddl_drop_info''',
+    'SELECT CAST(1 as bigint)'
+);
+
+
+
+SELECT finish();
+
+END;
