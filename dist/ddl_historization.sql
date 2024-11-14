@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS ddl_history (
   id serial primary key,
   ddl_date    timestamptz,      -- when the event occured
   objoid      oid,              -- the oid of the object
-  objsuboid   oid,              -- the oid of the column
+  objsubid    oid,              -- the oid of the column
   username    text,             -- the role used by the ddl command
   ddl_tag     text,
   object_name text,
