@@ -21,6 +21,19 @@ jobs:
       # Basic regression test.
       - run: pg-build-test
 
+      - name: Checkout pgtap
+        uses: actions/checkout@v4
+        with:
+          repository: theory/pgtap
+          path: pgtap
+          ref: v1.3.4
+
+      - name: install pgtap
+        working-directory: pgtap
+        run: make && psql --host localhost --username postgres --dbname postgres --file sql/pgtap.sql
+        env:
+          PGPASSWORD: postgres
+
       - name: build application
         run: make all
 
@@ -31,19 +44,6 @@ jobs:
         run: >-
           psql --host localhost --username postgres --dbname postgres \
                -c 'CREATE EXTENSION ddl_historization'
-        env:
-          PGPASSWORD: postgres
-
-      - name: Checkout pgtap
-        uses: actions/checkout@v4
-        with:
-          repository: theory/pgtap
-          path: pgtap
-          ref: v1.3.3
-
-      - name: install pgtap
-        working-directory: pgtap
-        run: make && psql --host localhost --username postgres --dbname postgres --file sql/pgtap.sql
         env:
           PGPASSWORD: postgres
 
