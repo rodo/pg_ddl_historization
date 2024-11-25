@@ -1,4 +1,4 @@
 comment = 'Historize ddl changes'
-default_version = '0.0.5'
+default_version = '0.0.6'
 relocatable = false
 module_pathname = '$libdir/ddl_historization'
