@@ -16,7 +16,9 @@ BEGIN
      (ddl_date, objoid, objsubid, ddl_tag, object_name, ddl_command, otype, username, trg_name, txid)
      VALUES
      (statement_timestamp(), r.objid, r.objsubid, tg_tag, r.object_identity, s, r.object_type, current_user, 'command_end', txid_current() );
+     --
      -- log columns for new tables
+     --
      IF tg_tag = 'CREATE TABLE' AND r.object_type = 'table' THEN
        INSERT INTO @extschema@.ddl_history_column (attrelid, tablename, columnname)
        SELECT attrelid, r.object_identity, attname FROM pg_attribute
@@ -43,7 +45,12 @@ BEGIN
     LOOP
       INSERT INTO @extschema@.ddl_history (ddl_date, objoid, objsubid, ddl_tag, object_name, ddl_command, otype, username, trg_name, txid )
       VALUES (statement_timestamp(), r.objid, r.objsubid, tg_tag, r.object_identity, s, r.object_type, current_user, 'sql_drop', txid_current() );
-
+     --
+     -- drop columns
+     --
+     IF tg_tag = 'DROP TABLE' AND r.object_type = 'table' THEN
+       DELETE FROM @extschema@.ddl_history_column WHERE tablename = r.object_identity;
+     END IF;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
