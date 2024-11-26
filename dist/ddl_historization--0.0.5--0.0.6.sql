@@ -1,5 +1,19 @@
--- Log ddl changes on non DROP actions
 --
+-- Create a new table to collect the new columns
+--
+CREATE TABLE IF NOT EXISTS ddl_history_column (
+  attrelid      oid NOT NULL,
+  attnum        smallint NOT NULL,
+  tablename     name NOT NULL,
+  columnname    name NOT NULL,
+  creation_time timestamp with time zone DEFAULT current_timestamp,
+  create_by     text DEFAULT current_user
+);
+
+CREATE UNIQUE INDEX ON ddl_history_column (tablename, columnname);
+
+--
+-- Update the function to fill the table
 --
 CREATE OR REPLACE FUNCTION log_ddl()
   RETURNS event_trigger AS $$
@@ -35,9 +49,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Log ddl changes on DROP actions
---
---
 CREATE OR REPLACE FUNCTION log_ddl_drop()
 
   RETURNS event_trigger AS $$
@@ -64,35 +75,5 @@ BEGIN
        DELETE FROM @extschema@.ddl_history_column WHERE attrelid = r.objid AND attnum=r.objsubid;
      END IF;
     END LOOP;
-END;
-$$ LANGUAGE plpgsql;
---
---
---
-CREATE OR REPLACE FUNCTION log_ddl_start()
-  RETURNS void AS $$
-DECLARE
-  schemaname TEXT;
-BEGIN
-  SELECT n.nspname FROM pg_extension e JOIN pg_namespace n ON n.oid=e.extnamespace WHERE e.extname='ddl_historization' INTO schemaname;
-
-  EXECUTE format('
-        CREATE EVENT TRIGGER log_ddl_info
-        ON ddl_command_end
-        EXECUTE FUNCTION %s.log_ddl()', schemaname);
-
-  EXECUTE format('
-        CREATE EVENT TRIGGER log_ddl_drop_info
-        ON sql_drop
-        EXECUTE FUNCTION %s.log_ddl_drop()', schemaname);
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION log_ddl_stop()
-  RETURNS void AS $$
-BEGIN
-        EXECUTE format('DROP EVENT TRIGGER IF EXISTS log_ddl_info');
-        EXECUTE format('DROP EVENT TRIGGER IF EXISTS log_ddl_drop_info');
 END;
 $$ LANGUAGE plpgsql;

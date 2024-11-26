@@ -1,0 +1,11 @@
+2024-11-26  Rodolphe Quiédeville  <rodolphe@quiedeville.org>
+
+	* Add a new column to store the attnum in ddl_history_column
+
+	* Change the function log_ddl_drop()
+
+2024-11-25  Rodolphe Quiédeville  <rodolphe@quiedeville.org>
+
+	* Change the function log_ddl()
+
+	* Add a new table ddl_history_column

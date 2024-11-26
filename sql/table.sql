@@ -17,6 +17,20 @@ CREATE TABLE IF NOT EXISTS ddl_history (
 );
 
 --
+--
+--
+CREATE TABLE IF NOT EXISTS ddl_history_column (
+  attrelid      oid NOT NULL,
+  attnum        smallint NOT NULL,
+  tablename     name NOT NULL,
+  columnname    name NOT NULL,
+  creation_time timestamp with time zone DEFAULT current_timestamp,
+  create_by     text DEFAULT current_user
+);
+
+CREATE UNIQUE INDEX ON ddl_history_column (tablename, columnname);
+
+--
 -- View dedicated to consult the comment on all objects
 --
 CREATE OR REPLACE VIEW ddl_history_comment AS

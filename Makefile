@@ -19,10 +19,9 @@ SCHEMA = @extschema@
 
 include $(PGXS)
 
-all: $(DATA) $(PGTLEOUT)
+all: $(PGTLEOUT)
 
 clean:
-	rm -f $(DATA)
 	rm -f $(PGTLEOUT)
 
 dist/$(EXTENSION)--$(EXTVERSION).sql: $(FILES)

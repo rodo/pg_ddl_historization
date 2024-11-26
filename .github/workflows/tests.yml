@@ -35,7 +35,7 @@ jobs:
           PGPASSWORD: postgres
 
       - name: build application
-        run: make all
+        run: make clean all
 
       - name: install extension
         run: make install
