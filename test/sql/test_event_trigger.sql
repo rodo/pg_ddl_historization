@@ -20,4 +20,4 @@ SELECT results_eq(
 
 SELECT finish();
 
-END;
+ROLLBACK;
