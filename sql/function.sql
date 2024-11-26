@@ -1,7 +1,6 @@
 -- Log ddl changes on non DROP actions
 --
 --
-
 CREATE OR REPLACE FUNCTION log_ddl()
   RETURNS event_trigger AS $$
 DECLARE
@@ -70,9 +69,6 @@ $$ LANGUAGE plpgsql;
 --
 --
 --
-
-
-
 CREATE OR REPLACE FUNCTION log_ddl_start()
   RETURNS void AS $$
 DECLARE
