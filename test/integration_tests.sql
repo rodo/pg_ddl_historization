@@ -69,7 +69,7 @@ CREATE TABLE inte_ref (id int PRIMARY KEY REFERENCES inte_fifoo (id) );
 -- 1 row for the table and one for the index
 SELECT results_eq(
     'SELECT count(*) FROM ddl_history',
-    'SELECT CAST(12 as bigint)'
+    'SELECT CAST(15 as bigint)'
 );
 
 
