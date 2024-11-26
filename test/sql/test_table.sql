@@ -19,7 +19,7 @@ SELECT has_table('public'::name, 'ddl_history_column'::name);
 SELECT columns_are(
        'public'::name,
        'ddl_history_column'::name,
-       ARRAY['attrelid', 'tablename', 'columnname', 'creation_time', 'create_by']);
+       ARRAY['attrelid', 'attnum', 'tablename', 'columnname', 'creation_time', 'create_by']);
 
 SELECT has_view('public'::name, 'ddl_history_comment'::name);
 
