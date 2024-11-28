@@ -19,7 +19,7 @@ SCHEMA = @extschema@
 
 include $(PGXS)
 
-all: $(PGTLEOUT)
+all: dist/pgtle.ddl_historization.sql
 
 clean:
 	rm -f $(PGTLEOUT)
@@ -32,6 +32,9 @@ dist/$(EXTENSION)--$(EXTVERSION).sql: $(FILES)
 
 test:
 	pg_prove -f test/sql/*.sql
+
+dist/pgtle.ddl_historization.sql: $(PGTLEOUT)
+	cat $< > $@
 
 $(PGTLEOUT): dist/$(EXTENSION)--$(EXTVERSION).sql pgtle_header.in pgtle_footer.in
 	sed -e 's/_EXTVERSION_/$(EXTVERSION)/' pgtle_header.in > $(PGTLEOUT)
