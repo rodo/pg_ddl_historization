@@ -42,7 +42,7 @@ jobs:
           PGPASSWORD: postgres
 
       - name: install flex
-        run: sudo apt-get install flex
+        run: sudo apt-get install flex --yes --no-install-recommends
 
       - name: install pg_tle
         working-directory: pg_tle
