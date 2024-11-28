@@ -1,0 +1,83 @@
+# .github/workflows/pgtest.yml
+name: pg_tle tests
+
+on: push
+
+jobs:
+  pg_tle:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [ '12', '13', '14', '15', '16', '17' ]
+
+    container: pgxn/pgxn-tools
+    env:
+      PGUSER: postgres
+
+    steps:
+      - run: pg-start ${{ matrix.version }}
+      - uses: actions/checkout@main
+
+      # Basic regression test.
+      - run: pg-build-test
+
+      - name: Checkout pgtap
+        uses: actions/checkout@v4
+        with:
+          repository: theory/pgtap
+          path: pgtap
+          ref: v1.3.3
+
+      - name: Checkout pg_tle
+        uses: actions/checkout@v4
+        with:
+          repository: aws/pg_tle
+          path: pg_tle
+          ref: v1.2.0
+
+      - name: install pgtap
+        working-directory: pgtap
+        run: make && psql --host localhost --username postgres --dbname postgres --file sql/pgtap.sql
+        env:
+          PGPASSWORD: postgres
+
+      - name: install flex
+        run: sudo apt-get install flex --yes --no-install-recommends
+
+      - name: install pg_tle
+        working-directory: pg_tle
+        run: make && make install
+
+      - name: create extension pg_tle
+        run: >-
+          psql --host localhost --username postgres --dbname postgres \
+               -c 'CREATE EXTENSION pg_tle'
+        env:
+          PGPASSWORD: postgres
+
+      - name: build application
+        run: make clean all
+
+      - name: create extension pg_tle
+        run: >-
+          psql --host localhost --username postgres --dbname postgres \
+               -f 'pgtle.ddl_historization.sql'
+        env:
+          PGPASSWORD: postgres
+
+      - name: create extension
+        run: >-
+          psql --host localhost --username postgres --dbname postgres \
+               -c "SELECT pgtle.install_extension('ddl_historization')"
+        env:
+          PGPASSWORD: postgres
+
+      - name: run unit tests
+        run: pg_prove --host localhost --dbname postgres --username postgres test/sql/*.sql
+        env:
+          PGPASSWORD: postgres
+
+      - name: run integration tests
+        run: pg_prove --host localhost --dbname postgres --username postgres test/*.sql
+        env:
+          PGPASSWORD: postgres
