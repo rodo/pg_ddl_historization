@@ -1,3 +1,9 @@
+SELECT pgtle.install_extension
+(
+ 'ddl_historization',
+ '0.0.8',
+ 'DDL changes historization',
+$_pg_tle_$
 --
 --
 --
@@ -58,7 +64,7 @@ SELECT
 
 GRANT INSERT,SELECT ON ddl_history TO PUBLIC;
 GRANT USAGE ON ddl_history_id_seq TO PUBLIC;
---
+-- Log ddl changes on non DROP actions
 --
 --
 CREATE OR REPLACE FUNCTION log_ddl()
@@ -156,3 +162,21 @@ BEGIN
 
 END;
 $funky$ LANGUAGE plpgsql;
+--
+-- Stop to historize
+--
+CREATE OR REPLACE FUNCTION log_ddl_stop()
+  RETURNS void AS $$
+BEGIN
+        EXECUTE format('DROP EVENT TRIGGER IF EXISTS log_ddl_info');
+        EXECUTE format('DROP EVENT TRIGGER IF EXISTS log_ddl_drop_info');
+END;
+$$ LANGUAGE plpgsql;
+--
+-- Automatically start the historization at the end of install.
+--
+SELECT @extschema@.log_ddl_start();
+
+INSERT INTO @extschema@.ddl_history_schema (schema_name) VALUES ('public');
+$_pg_tle_$
+);
