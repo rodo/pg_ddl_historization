@@ -175,7 +175,6 @@ BEGIN
 
   FOR r IN SELECT * FROM pg_event_trigger_ddl_commands()
   LOOP
-     RAISE NOTICE '%', r.schema_name;
      IF EXISTS (SELECT FROM @extschema@.ddl_history_schema WHERE schema_name = r.schema_name) THEN
        INSERT INTO @extschema@.ddl_history
        (ddl_date, objoid, objsubid, ddl_tag, object_name, ddl_command, otype, username, trg_name, txid)
