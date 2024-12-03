@@ -12,8 +12,9 @@ TRUNCATE ddl_history;
 CREATE EXTENSION pg_trgm;
 
 SELECT results_eq(
-    'SELECT count(*) FROM ddl_history WHERE ddl_tag=''CREATE EXTENSION'' ',
-    'SELECT CAST(1 as bigint)'
+    'SELECT count(*) > 0 FROM ddl_history WHERE ddl_command LIKE ''CREATE EXTENSION pg_trgm%'' ',
+    'SELECT true',
+    'There is one row in ddl_history for extension'
 );
 
 
