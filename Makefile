@@ -19,7 +19,7 @@ SCHEMA = @extschema@
 
 include $(PGXS)
 
-all: $(PGTLEOUT)
+all: $(PGTLEOUT) ddl_historization.control
 
 clean:
 	rm -f $(PGTLEOUT)
@@ -40,3 +40,6 @@ $(PGTLEOUT): dist/$(EXTENSION)--$(EXTVERSION).sql pgtle_header.in pgtle_footer.i
 
 dist: $(PGTLEOUT)
 	git archive --format zip --prefix=$(EXTENSION)-$(EXTVERSION)/ -o $(EXTENSION)-$(EXTVERSION).zip HEAD
+
+ddl_historization.control: ddl_historization.control.in META.json
+	sed 's,EXTVERSION,$(EXTVERSION),g; ' $< > $@;
