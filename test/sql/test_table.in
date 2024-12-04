@@ -3,34 +3,40 @@
 --
 BEGIN;
 
-SELECT plan(8);
+SELECT plan(9);
 
-SELECT has_schema('public'::name);
+SELECT has_schema('_SCHEMA_'::name);
 
-SELECT has_table('public'::name, 'ddl_history'::name);
-
-SELECT has_table('public'::name, 'ddl_history_schema'::name);
+SELECT has_table('_SCHEMA_'::name, 'ddl_history'::name);
 
 SELECT columns_are(
-       'public'::name,
+       '_SCHEMA_'::name,
        'ddl_history'::name,
        ARRAY['id', 'ddl_date', 'objoid', 'objsubid',  'username', 'ddl_tag', 'object_name', 'otype', 'ddl_command', 'trg_name', 'txid']);
 
-SELECT has_table('public'::name, 'ddl_history_column'::name);
+SELECT has_table('_SCHEMA_'::name, 'ddl_history_column'::name);
 
 SELECT columns_are(
-       'public'::name,
+       '_SCHEMA_'::name,
        'ddl_history_column'::name,
        ARRAY['attrelid', 'attnum', 'tablename', 'columnname', 'creation_time', 'create_by']);
+--
+-- ddl_history_schema
+--
+SELECT has_table('_SCHEMA_'::name, 'ddl_history_schema'::name);
 
-SELECT has_view('public'::name, 'ddl_history_comment'::name);
+SELECT columns_are(
+       '_SCHEMA_'::name,
+       'ddl_history_schema'::name,
+       ARRAY['schema_name', 'added_on', 'added_by']);
+--
+SELECT has_view('_SCHEMA_'::name, 'ddl_history_comment'::name);
 
 -- by default there is only one schema
 SELECT results_eq(
     'SELECT count(*) FROM ddl_history_schema ',
     'SELECT CAST(1 as bigint)'
 );
-
 
 SELECT finish();
 
