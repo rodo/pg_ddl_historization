@@ -19,7 +19,7 @@ PGXS := $(shell $(PG_CONFIG) --pgxs)
 # edit this value if you want to deploy by hand
 SCHEMA = @extschema@
 
-_SCHEMA_ = pgtap
+_SCHEMA_ = public
 
 include $(PGXS)
 
