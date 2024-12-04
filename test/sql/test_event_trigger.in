@@ -2,6 +2,8 @@
 -- Test if the event trigger exists
 -- There is no function for now in pgtap to test event triggers
 --
+SET search_path = public, _PGTAP_SCHEMA_;
+
 BEGIN;
 
 SELECT plan(2);
