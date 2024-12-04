@@ -11,24 +11,31 @@ DATA = dist/ddl_historization--$(EXTVERSION).sql dist/ddl_historization--*--$(EX
 
 PGTLEOUT = dist/pgtle.$(EXTENSION)-$(EXTVERSION).sql
 
+UNITTESTS = $(shell find test/sql/ -type f -name '*.in' | sed -e 's/in/sql/')
+
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 
 # edit this value if you want to deploy by hand
 SCHEMA = @extschema@
 
+_SCHEMA_ = pgtap
+
 include $(PGXS)
 
-all: $(PGTLEOUT) ddl_historization.control
+all: $(PGTLEOUT) ddl_historization.control $(UNITTESTS)
 
 clean:
-	rm -f $(PGTLEOUT)
+	rm -f $(PGTLEOUT) $(UNITTESTS)
 
 dist/$(EXTENSION)--$(EXTVERSION).sql: $(FILES)
 	cat sql/table.sql > $@
 	cat sql/function.sql >> $@
 	cat sql/event_trigger.sql >> $@
 	cat $@ > dist/ddl_historization.sql
+
+test/sql/%.sql: test/sql/%.in
+	sed 's,_SCHEMA_,$(_SCHEMA_),g; ' $< > $@;
 
 test:
 	pg_prove -f test/sql/*.sql
