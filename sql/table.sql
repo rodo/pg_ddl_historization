@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS ddl_history (
 --
 --
 CREATE TABLE IF NOT EXISTS ddl_history_column (
-  attrelid      oid PRIMARY KEY,
+  id            serial primary key,
+  attrelid      oid not null,
   attnum        smallint NOT NULL,
   tablename     name NOT NULL,
   columnname    name NOT NULL,

@@ -122,6 +122,7 @@ WHERE datname = current_database() ' INTO owner;
   EXECUTE format('GRANT USAGE ON ddl_history_id_seq TO  %I', owner);
 
   EXECUTE format('GRANT SELECT,INSERT,DELETE ON ddl_history_column TO %I', owner);
+  EXECUTE format('GRANT USAGE ON ddl_history_column_id_seq TO  %I', owner);
 
   EXECUTE format('GRANT SELECT,INSERT ON ddl_history_schema TO %I', owner);
 

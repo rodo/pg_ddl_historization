@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS ddl_history (
 --
 --
 CREATE TABLE IF NOT EXISTS ddl_history_column (
-  attrelid      oid PRIMARY KEY,
+  id            serial primary key,
+  attrelid      oid not null,
   attnum        smallint NOT NULL,
   tablename     name NOT NULL,
   columnname    name NOT NULL,
@@ -190,6 +191,7 @@ WHERE datname = current_database() ' INTO owner;
   EXECUTE format('GRANT USAGE ON ddl_history_id_seq TO  %I', owner);
 
   EXECUTE format('GRANT SELECT,INSERT,DELETE ON ddl_history_column TO %I', owner);
+  EXECUTE format('GRANT USAGE ON ddl_history_column_id_seq TO  %I', owner);
 
   EXECUTE format('GRANT SELECT,INSERT ON ddl_history_schema TO %I', owner);
 
