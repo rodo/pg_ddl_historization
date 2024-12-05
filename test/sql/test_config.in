@@ -1,0 +1,25 @@
+--
+-- Test if the tables exists and have the right format
+--
+-- Table list
+--
+--  ddl_history
+--  ddl_history_column
+--  ddl_history_schema
+
+SET search_path = public, _PGTAP_SCHEMA_;
+
+BEGIN;
+
+SELECT plan(29);
+
+
+-- by default there is only one schema
+SELECT results_eq(
+    'SELECT count(*) FROM ddl_history_schema ',
+    'SELECT CAST(1 as bigint)'
+);
+
+SELECT finish();
+
+ROLLBACK;

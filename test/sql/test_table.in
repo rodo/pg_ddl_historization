@@ -11,7 +11,7 @@ SET search_path = public, _PGTAP_SCHEMA_;
 
 BEGIN;
 
-SELECT plan(29);
+SELECT plan(28);
 
 SELECT has_schema('_SCHEMA_'::name);
 --
@@ -76,11 +76,6 @@ SELECT col_type_is('_SCHEMA_'::name, 'ddl_history_schema'::name, 'added_by'::nam
 --
 SELECT has_view('_SCHEMA_'::name, 'ddl_history_comment'::name);
 
--- by default there is only one schema
-SELECT results_eq(
-    'SELECT count(*) FROM ddl_history_schema ',
-    'SELECT CAST(1 as bigint)'
-);
 
 SELECT finish();
 
