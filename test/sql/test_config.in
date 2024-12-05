@@ -11,7 +11,7 @@ SET search_path = public, _PGTAP_SCHEMA_;
 
 BEGIN;
 
-SELECT plan(29);
+SELECT plan(1);
 
 
 -- by default there is only one schema
