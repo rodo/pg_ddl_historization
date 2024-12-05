@@ -1,10 +1,9 @@
 --
 -- Warning,this test works only on empty ddl_history table
 --
-
 BEGIN;
 
-SELECT plan(6);
+SELECT plan(10);
 
 TRUNCATE ddl_history;
 
@@ -72,6 +71,59 @@ SELECT results_eq(
     'SELECT CAST(15 as bigint)'
 );
 
+-- Simple CREATE TABLE
+--
+--    ddl_tag    |     object_name     | otype |            ddl_command
+-- --------------+---------------------+-------+-----------------------------------
+--  CREATE TABLE | public.carabignac   | table | CREATE TABLE carabignac (id int);
+TRUNCATE ddl_history;
+CREATE TABLE carabignac (id int);
 
+SELECT results_eq('SELECT count(*) FROM ddl_history', 'SELECT CAST(1 as bigint)', 'CREATE TABLE generates 1 row');
 
+--
+-- Dropping a table generate 3 events
+--
+--    ddl_tag    |     object_name     | otype |            ddl_command
+-- --------------+---------------------+-------+-----------------------------------
+--  DROP TABLE   | public.carabignac   | table | DROP TABLE carabignac;
+--  DROP TABLE   | public.carabignac   | type  | DROP TABLE carabignac;
+--  DROP TABLE   | public.carabignac[] | type  | DROP TABLE carabignac;
+--
+TRUNCATE ddl_history;
+DROP TABLE carabignac;
+
+SELECT results_eq('SELECT count(*) FROM ddl_history', 'SELECT CAST(3 as bigint)', 'DROP TABLE generates 3 rows');
+
+-- CREATE TABLE with SERIAL
+--
+--    ddl_tag    |       object_name        |  otype   |             ddl_command
+-- --------------+--------------------------+----------+--------------------------------------
+--  CREATE TABLE | public.carabignac_id_seq | sequence | CREATE TABLE carabignac (id serial);
+--  CREATE TABLE | public.carabignac        | table    | CREATE TABLE carabignac (id serial);
+--  CREATE TABLE | public.carabignac_id_seq | sequence | CREATE TABLE carabignac (id serial);
+
+TRUNCATE ddl_history;
+CREATE TABLE carabignac (id serial);
+
+SELECT results_eq('SELECT count(*) FROM ddl_history', 'SELECT CAST(3 as bigint)', 'CREATE TABLE with serial generates 3 rows');
+
+-- -- CREATE TABLE with GENERATED ALWAYS
+--
+--    ddl_tag    |    object_name     |  otype   |                ddl_command
+-- --------------+--------------------+----------+--------------------------------------------
+--  CREATE TABLE | public.tgen_id_seq | sequence | CREATE TABLE tgen (                       +
+--               |                    |          |     id bigint GENERATED ALWAYS AS IDENTITY+
+--               |                    |          | );
+--  CREATE TABLE | public.tgen        | table    | CREATE TABLE tgen (                       +
+--               |                    |          |     id bigint GENERATED ALWAYS AS IDENTITY+
+--               |                    |          | );
+--  CREATE TABLE | public.tgen_id_seq | sequence | CREATE TABLE tgen (                       +
+--               |                    |          |     id bigint GENERATED ALWAYS AS IDENTITY+
+--               |                    |          | );
+
+TRUNCATE ddl_history;
+CREATE TABLE tgen (id bigint GENERATED ALWAYS AS IDENTITY );
+
+SELECT results_eq('SELECT count(*) FROM ddl_history', 'SELECT CAST(3 as bigint)', 'CREATE TABLE with serial generates 3 rows');
 ROLLBACK;
