@@ -20,6 +20,7 @@ PGXS := $(shell $(PG_CONFIG) --pgxs)
 SCHEMA = @extschema@
 
 _SCHEMA_ = public
+_PGTAP_SCHEMA_ = public
 
 include $(PGXS)
 
@@ -35,7 +36,8 @@ dist/$(EXTENSION)--$(EXTVERSION).sql: $(FILES)
 	cat $@ > dist/ddl_historization.sql
 
 test/sql/%.sql: test/sql/%.in
-	sed 's,_SCHEMA_,$(_SCHEMA_),g; ' $< > $@;
+	sed 's,_PGTAP_SCHEMA_,$(_PGTAP_SCHEMA_),g; ' $< > $@
+	sed -i 's,_SCHEMA_,$(_SCHEMA_),g; ' $@
 
 test:
 	pg_prove -f test/sql/*.sql

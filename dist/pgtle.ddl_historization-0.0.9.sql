@@ -1,3 +1,9 @@
+SELECT pgtle.install_extension
+(
+ 'ddl_historization',
+ '0.0.9',
+ 'DDL changes historization',
+$_pg_tle_$
 --
 --
 --
@@ -172,3 +178,5 @@ $$ LANGUAGE plpgsql;
 SELECT @extschema@.log_ddl_start();
 
 INSERT INTO @extschema@.ddl_history_schema (schema_name) VALUES ('public');
+$_pg_tle_$
+);

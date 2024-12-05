@@ -1,12 +1,15 @@
 --
 --
 --
+SET search_path = public, _PGTAP_SCHEMA_;
+
 BEGIN;
 
-SELECT plan(2);
+SELECT plan(3);
 
-SELECT has_function('public'::name, 'log_ddl'::name);
-SELECT has_function('public'::name, 'log_ddl_drop'::name);
+SELECT has_function('_SCHEMA_'::name, 'log_ddl'::name);
+SELECT has_function('_SCHEMA_'::name, 'log_ddl_start'::name);
+SELECT has_function('_SCHEMA_'::name, 'log_ddl_drop'::name);
 
 SELECT finish();
 
