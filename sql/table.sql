@@ -1,5 +1,13 @@
 --
+-- Create thre tables
 --
+-- ddl_history
+-- ddl_history_column
+-- ddl_history_schema
+--
+-- and one view
+--
+-- ddl_history_comment
 --
 
 CREATE TABLE IF NOT EXISTS ddl_history (
@@ -20,7 +28,8 @@ CREATE TABLE IF NOT EXISTS ddl_history (
 --
 --
 CREATE TABLE IF NOT EXISTS ddl_history_column (
-  attrelid      oid NOT NULL,
+  id            serial primary key,
+  attrelid      oid not null,
   attnum        smallint NOT NULL,
   tablename     name NOT NULL,
   columnname    name NOT NULL,

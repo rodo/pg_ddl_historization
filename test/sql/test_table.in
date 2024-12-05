@@ -11,7 +11,7 @@ SET search_path = public, _PGTAP_SCHEMA_;
 
 BEGIN;
 
-SELECT plan(28);
+SELECT plan(31);
 
 SELECT has_schema('_SCHEMA_'::name);
 --
@@ -25,6 +25,8 @@ SELECT columns_are(
        'ddl_history'::name,
        ARRAY['id', 'ddl_date', 'objoid', 'objsubid',  'username', 'ddl_tag',
              'object_name', 'otype', 'ddl_command', 'trg_name', 'txid']);
+
+SELECT col_is_pk('_SCHEMA_'::name, 'ddl_history'::name, 'id'::name);
 
 SELECT col_type_is('_SCHEMA_'::name, 'ddl_history'::name, 'id'::name, 'integer');
 SELECT col_type_is('_SCHEMA_'::name, 'ddl_history'::name, 'ddl_date'::name, 'timestamp with time zone');
@@ -49,8 +51,11 @@ SELECT has_table('_SCHEMA_'::name, 'ddl_history_column'::name);
 SELECT columns_are(
        '_SCHEMA_'::name,
        'ddl_history_column'::name,
-       ARRAY['attrelid', 'attnum', 'tablename', 'columnname', 'creation_time', 'create_by']);
+       ARRAY['id', 'attrelid', 'attnum', 'tablename', 'columnname', 'creation_time', 'create_by']);
 
+SELECT col_is_pk('_SCHEMA_'::name, 'ddl_history_column'::name, 'id'::name);
+
+SELECT col_type_is('_SCHEMA_'::name, 'ddl_history_column'::name, 'id'::name, 'integer');
 SELECT col_type_is('_SCHEMA_'::name, 'ddl_history_column'::name, 'attrelid'::name, 'oid');
 SELECT col_type_is('_SCHEMA_'::name, 'ddl_history_column'::name, 'attnum'::name, 'smallint');
 SELECT col_type_is('_SCHEMA_'::name, 'ddl_history_column'::name, 'tablename'::name, 'name');
