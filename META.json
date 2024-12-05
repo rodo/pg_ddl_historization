@@ -2,7 +2,7 @@
    "name": "ddl_historization",
    "abstract": "DDL historization for PostgreSQL",
    "description": "DDL historization build on event triggers.",
-   "version": "0.0.9",
+   "version": "0.0.10",
    "maintainer": [
       "Rodolphe Quiédeville <rodolphe@quiedeville.org>"
    ],
@@ -21,7 +21,7 @@
      "ddl_historization": {
        "abstract": "DDL historization for PostgreSQL",
        "file": "dist/ddl_historization.sql",
-       "version": "0.0.9"
+       "version": "0.0.10"
      }
    },
    "resources": {
